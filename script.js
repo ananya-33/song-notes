@@ -36,10 +36,12 @@ function addSong() {
   const note = document.getElementById('song-note').value;
   const url = document.getElementById('song-url').value;
   const imageInput = document.getElementById('song-image');
+  const timestamp = new Date().toISOString(); // Save the actual time
+
   const reader = new FileReader();
   reader.onload = function(e) {
     const image = e.target.result;
-    songs.push({ title, artist, note, url, image });
+    songs.push({ title, artist, note, url, image, timestamp });
     localStorage.setItem('songs', JSON.stringify(songs));
     renderSongs();
     closeModal('song-modal');
@@ -47,12 +49,13 @@ function addSong() {
   if (imageInput.files[0]) {
     reader.readAsDataURL(imageInput.files[0]);
   } else {
-    songs.push({ title, artist, note, url, image: '' });
+    songs.push({ title, artist, note, url, image: '', timestamp });
     localStorage.setItem('songs', JSON.stringify(songs));
     renderSongs();
     closeModal('song-modal');
   }
 }
+
 
 function deleteSong(index) {
   songs.splice(index, 1);
@@ -108,13 +111,32 @@ if (songs.length === 0) {
 }
 
 
-document.getElementById('view-only-toggle').addEventListener('change', function () {
-  const isViewOnly = this.checked;
-  const buttons = document.querySelectorAll('.edit-button, .delete-button, .add-button, .bulk-add-button');
-  buttons.forEach(button => {
-    button.style.display = isViewOnly ? 'none' : 'inline-block';
-  });
+
+document.addEventListener('DOMContentLoaded', function () {
+  const toggle = document.getElementById('view-only-toggle');
+  if (toggle) {
+    toggle.addEventListener('change', function () {
+      const isViewOnly = this.checked;
+      const buttons = document.querySelectorAll('.edit-button, .delete-button, .add-button, .bulk-add-button');
+      buttons.forEach(button => {
+        button.style.display = isViewOnly ? 'none' : 'inline-block';
+      });
+    });
+  }
+
+  // Show last added song info using timestamp
+  if (songs.length > 0) {
+    const last = songs[songs.length - 1];
+    const nameSpan = document.getElementById('last-song-name');
+    const dateSpan = document.getElementById('last-added-date');
+    if (nameSpan && dateSpan && last.timestamp) {
+      const formattedDate = new Date(last.timestamp).toLocaleDateString();
+      nameSpan.textContent = last.title;
+      dateSpan.textContent = formattedDate;
+    }
+  }
 });
+
 
 // Function to update last added song info
 function updateLastAdded(songName, date) {
