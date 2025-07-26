@@ -1,0 +1,81 @@
+body {
+  font-family: 'Albert Sans', sans-serif;
+  background: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 0.2em;
+}
+.subtitle {
+  font-size: 1.2em;
+  color: #555;
+}
+.placeholder-link {
+  display: inline-block;
+  margin-bottom: 30px;
+  color: #1db954;
+  text-decoration: none;
+}
+.form-container {
+  margin-bottom: 40px;
+}
+form input, form textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  font-family: inherit;
+}
+form button {
+  padding: 10px 20px;
+  background: #1db954;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: calc(50% - 10px);
+  position: relative;
+  overflow: hidden;
+}
+.card img {
+  width: 100%;
+  height: auto;
+}
+.card-content {
+  padding: 15px;
+}
+.card h3 {
+  margin: 0 0 5px;
+}
+.card p {
+  margin: 0 0 10px;
+}
+.card .actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card .delete {
+  display: none;
+  color: red;
+  cursor: pointer;
+}
+.card:hover .delete {
+  display: inline;
+}

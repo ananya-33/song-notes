@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>what you sound like to me</title>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>what you sound like to me</h1>
+    <p class="subtitle">This is a collection of songs that mean something to me. Each one tells a story.</p>
+    <a href="#" class="placeholder-link">Visit my Spotify playlist</a>
+
+    <div class="form-container">
+      <h2>Add a New Song</h2>
+      <form id="songForm">
+        <input type="text" id="title" placeholder="Song Title" required />
+        <input type="text" id="artist" placeholder="Artist" required />
+        <input type="text" id="image" placeholder="Image URL" required />
+        <textarea id="note" placeholder="Why this song is meaningful" required></textarea>
+        <input type="url" id="spotify" placeholder="Spotify URL" required />
+        <button type="submit">Add Song</button>
+      </form>
+    </div>
+
+    <div id="songCards" class="card-container"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
