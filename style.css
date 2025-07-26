@@ -23,6 +23,24 @@ body {
   text-decoration: none;
 }
 
+
+#last-added-info {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+#view-only-toggle-container {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  background: #f0f0f0;
+  padding: 8px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
 .card-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
