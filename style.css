@@ -1,128 +1,82 @@
 body {
   font-family: 'Albert Sans', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f9f9f9;
-  overflow-x: hidden;
+  margin: 20px;
+  background-color: #f9f9f9;
 }
-
-#trail-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.container {
-  position: relative;
-  z-index: 1;
-  padding: 2rem;
-  text-align: center;
-}
-
 h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 2em;
 }
-
 .subtitle {
-  font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 1rem;
+  font-style: italic;
+  margin-bottom: 10px;
 }
-
 .playlist-link {
-  display: inline-block;
-  margin-bottom: 2rem;
-  color: #1db954;
-  text-decoration: none;
+  display: block;
+  margin-bottom: 30px;
 }
-
-#cards-container {
+.card-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
+  gap: 20px;
 }
-
 .card {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border: 1px solid #ccc;
+  padding: 15px;
   width: 200px;
-  padding: 1rem;
   position: relative;
-  overflow: hidden;
 }
-
 .card img {
   width: 100%;
-  border-radius: 4px;
+  height: auto;
 }
-
-.card h3 {
-  margin: 0.5rem 0 0.2rem;
-}
-
-.card p {
-  font-size: 0.9rem;
-  color: #333;
-}
-
-.card .actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0.5rem;
-}
-
-.card .actions a,
-.card .actions button {
-  background: none;
+.card .delete-btn, .card .edit-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #eee;
   border: none;
-  color: #1db954;
   cursor: pointer;
-  font-size: 1rem;
+  display: none;
 }
-
-#add-button {
+.card:hover .delete-btn, .card:hover .edit-btn {
+  display: inline;
+}
+.add-button, .bulk-button {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  background: #1db954;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  font-size: 2rem;
-  width: 3rem;
-  height: 3rem;
+  bottom: 20px;
+  right: 20px;
+  margin-left: 10px;
+  padding: 10px 15px;
+  font-size: 20px;
   cursor: pointer;
-  z-index: 2;
 }
-
+.bulk-button {
+  right: 70px;
+}
 .modal {
   display: none;
   position: fixed;
-  z-index: 3;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
 }
-
 .modal-content {
-  background-color: #fff;
+  background: white;
   margin: 10% auto;
-  padding: 2rem;
-  border: 1px solid #888;
+  padding: 20px;
   width: 300px;
-  border-radius: 8px;
 }
-
-.close-button {
+.modal-content label {
+  display: block;
+  margin-top: 10px;
+  text-align: right;
+}
+.modal-content input, .modal-content textarea {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.close {
   float: right;
-  font-size: 1.5rem;
   cursor: pointer;
 }

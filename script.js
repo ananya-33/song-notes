@@ -1,108 +1,136 @@
-const canvas = document.getElementById('trail-canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('modal');
+  const addBtn = document.getElementById('addSongBtn');
+  const bulkBtn = document.getElementById('bulkAddBtn');
+  const bulkInput = document.getElementById('bulkFileInput');
+  const closeBtn = document.querySelector('.close');
+  const form = document.getElementById('songForm');
+  const container = document.getElementById('cardContainer');
 
-let trails = [];
+  let songs = JSON.parse(localStorage.getItem('songs') || '[]');
 
-function drawTrail(x, y) {
-  trails.push({ x, y, alpha: 1 });
-}
+  function renderCards() {
+    container.innerHTML = '';
+    songs.forEach((song, index) => {
+      const card = document.createElement('div');
+      card.className = 'card';
 
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  trails.forEach((trail, index) => {
-    ctx.beginPath();
-    ctx.arc(trail.x, trail.y, 20, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(152, 251, 152, ${trail.alpha})`; // pale green
-    ctx.fill();
-    trail.alpha -= 0.01;
-    if (trail.alpha <= 0) trails.splice(index, 1);
-  });
-  requestAnimationFrame(animate);
-}
+      if (song.image) {
+        const img = document.createElement('img');
+        img.src = song.image;
+        card.appendChild(img);
+      }
 
-window.addEventListener('mousemove', (e) => {
-  drawTrail(e.clientX, e.clientY);
-});
-
-animate();
-
-const addButton = document.getElementById('add-button');
-const modal = document.getElementById('modal');
-const closeButton = document.querySelector('.close-button');
-const form = document.getElementById('song-form');
-const cardsContainer = document.getElementById('cards-container');
-
-function loadSongs() {
-  const songs = JSON.parse(localStorage.getItem('songs') || '[]');
-  cardsContainer.innerHTML = '';
-  songs.forEach((song, index) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    const img = document.createElement('img');
-    img.src = song.image;
-    const title = document.createElement('h3');
-    title.textContent = song.title;
-    const artist = document.createElement('p');
-    artist.textContent = song.artist;
-    const note = document.createElement('p');
-    note.textContent = song.note;
-    const actions = document.createElement('div');
-    actions.className = 'actions';
-    const play = document.createElement('a');
-    play.href = song.spotify;
-    play.target = '_blank';
-    play.textContent = '▶';
-    const del = document.createElement('button');
-    del.textContent = '🗑️';
-    del.onclick = () => {
-      songs.splice(index, 1);
-      localStorage.setItem('songs', JSON.stringify(songs));
-      loadSongs();
-    };
-    actions.appendChild(play);
-    actions.appendChild(del);
-    card.appendChild(img);
-    card.appendChild(title);
-    card.appendChild(artist);
-    card.appendChild(note);
-    card.appendChild(actions);
-    cardsContainer.appendChild(card);
-  });
-}
-
-addButton.onclick = () => {
-  modal.style.display = 'block';
-};
-
-closeButton.onclick = () => {
-  modal.style.display = 'none';
-};
-
-form.onsubmit = (e) => {
-  e.preventDefault();
-  const reader = new FileReader();
-  const file = document.getElementById('image').files[0];
-  reader.onload = function(event) {
-    const imageData = event.target.result;
-    const newSong = {
-      title: document.getElementById('title').value,
-      artist: document.getElementById('artist').value,
-      image: imageData,
-      note: document.getElementById('note').value,
-      spotify: document.getElementById('spotify').value
-    };
-    const songs = JSON.parse(localStorage.getItem('songs') || '[]');
-    songs.push(newSong);
-    localStorage.setItem('songs', JSON.stringify(songs));
-    loadSongs();
-    modal.style.display = 'none';
-    form.reset();
-  };
-  if (file) {
-    reader.readAsDataURL(file);
+      card.innerHTML += `
+        <strong>${song.title}</strong><br>
+        <em>${song.artist}</em><br>
+        <p>${song.note}</p>
+        <a href="${song.spotify}" target="_blank">Play</a>
+        <button class="delete-btn" onclick="deleteSong(${index})">🗑️</button>
+        <button class="edit-btn" onclick="editSong(${index})">✏️</button>
+      `;
+      container.appendChild(card);
+    });
   }
-};
 
-window.onload = loadSongs;
+  window.deleteSong = (index) => {
+    songs.splice(index, 1);
+    localStorage.setItem('songs', JSON.stringify(songs));
+    renderCards();
+  };
+
+  window.editSong = (index) => {
+    const song = songs[index];
+    form.title.value = song.title;
+    form.artist.value = song.artist;
+    form.note.value = song.note;
+    form.spotify.value = song.spotify;
+    modal.style.display = 'block';
+    form.onsubmit = (e) => {
+      e.preventDefault();
+      song.title = form.title.value;
+      song.artist = form.artist.value;
+      song.note = form.note.value;
+      song.spotify = form.spotify.value;
+      const file = form.image.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          song.image = reader.result;
+          localStorage.setItem('songs', JSON.stringify(songs));
+          renderCards();
+          modal.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        localStorage.setItem('songs', JSON.stringify(songs));
+        renderCards();
+        modal.style.display = 'none';
+      }
+    };
+  };
+
+  addBtn.onclick = () => {
+    form.reset();
+    modal.style.display = 'block';
+    form.onsubmit = (e) => {
+      e.preventDefault();
+      const newSong = {
+        title: form.title.value,
+        artist: form.artist.value,
+        note: form.note.value,
+        spotify: form.spotify.value,
+        image: null
+      };
+      const file = form.image.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          newSong.image = reader.result;
+          songs.push(newSong);
+          localStorage.setItem('songs', JSON.stringify(songs));
+          renderCards();
+          modal.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        songs.push(newSong);
+        localStorage.setItem('songs', JSON.stringify(songs));
+        renderCards();
+        modal.style.display = 'none';
+      }
+    };
+  };
+
+  bulkBtn.onclick = () => bulkInput.click();
+  bulkInput.onchange = () => {
+    const file = bulkInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const lines = reader.result.split('\n');
+        const headers = lines[0].split(',');
+        const songIndex = headers.indexOf('song');
+        const artistIndex = headers.indexOf('artist');
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split(',');
+          if (cols.length >= 2) {
+            songs.push({
+              title: cols[songIndex],
+              artist: cols[artistIndex],
+              note: '',
+              spotify: '',
+              image: null
+            });
+          }
+        }
+        localStorage.setItem('songs', JSON.stringify(songs));
+        renderCards();
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  closeBtn.onclick = () => modal.style.display = 'none';
+  renderCards();
+});
