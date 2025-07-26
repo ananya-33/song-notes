@@ -107,4 +107,20 @@ if (songs.length === 0) {
   localStorage.setItem('songs', JSON.stringify(songs));
 }
 
+
+document.getElementById('view-only-toggle').addEventListener('change', function () {
+  const isViewOnly = this.checked;
+  const buttons = document.querySelectorAll('.edit-button, .delete-button, .add-button, .bulk-add-button');
+  buttons.forEach(button => {
+    button.style.display = isViewOnly ? 'none' : 'inline-block';
+  });
+});
+
+// Function to update last added song info
+function updateLastAdded(songName, date) {
+  document.getElementById('last-song-name').textContent = songName;
+  document.getElementById('last-added-date').textContent = date;
+}
+
+
 renderSongs();
