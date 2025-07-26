@@ -1,136 +1,110 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('modal');
-  const addBtn = document.getElementById('addSongBtn');
-  const bulkBtn = document.getElementById('bulkAddBtn');
-  const bulkInput = document.getElementById('bulkFileInput');
-  const closeBtn = document.querySelector('.close');
-  const form = document.getElementById('songForm');
-  const container = document.getElementById('cardContainer');
 
-  let songs = JSON.parse(localStorage.getItem('songs') || '[]');
+let songs = JSON.parse(localStorage.getItem('songs') || '[]');
 
-  function renderCards() {
-    container.innerHTML = '';
-    songs.forEach((song, index) => {
-      const card = document.createElement('div');
-      card.className = 'card';
+function renderSongs() {
+  const container = document.getElementById('card-container');
+  container.innerHTML = '';
+  songs.forEach((song, index) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${song.image || ''}" alt="Album Art" />
+      <h3>${song.title}</h3>
+      <p><strong>${song.artist}</strong></p>
+      <p>${song.note || ''}</p>
+      <div class="actions">
+        <a href="${song.url}" target="_blank">▶️ Play</a>
+        <button onclick="editSong(${index})">✏️</button>
+        <button onclick="deleteSong(${index})">🗑️</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
 
-      if (song.image) {
-        const img = document.createElement('img');
-        img.src = song.image;
-        card.appendChild(img);
-      }
+function openModal(id) {
+  document.getElementById(id).style.display = 'block';
+}
 
-      card.innerHTML += `
-        <strong>${song.title}</strong><br>
-        <em>${song.artist}</em><br>
-        <p>${song.note}</p>
-        <a href="${song.spotify}" target="_blank">Play</a>
-        <button class="delete-btn" onclick="deleteSong(${index})">🗑️</button>
-        <button class="edit-btn" onclick="editSong(${index})">✏️</button>
-      `;
-      container.appendChild(card);
-    });
-  }
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
 
-  window.deleteSong = (index) => {
-    songs.splice(index, 1);
+function addSong() {
+  const title = document.getElementById('song-title').value;
+  const artist = document.getElementById('song-artist').value;
+  const note = document.getElementById('song-note').value;
+  const url = document.getElementById('song-url').value;
+  const imageInput = document.getElementById('song-image');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const image = e.target.result;
+    songs.push({ title, artist, note, url, image });
     localStorage.setItem('songs', JSON.stringify(songs));
-    renderCards();
+    renderSongs();
+    closeModal('song-modal');
   };
+  if (imageInput.files[0]) {
+    reader.readAsDataURL(imageInput.files[0]);
+  } else {
+    songs.push({ title, artist, note, url, image: '' });
+    localStorage.setItem('songs', JSON.stringify(songs));
+    renderSongs();
+    closeModal('song-modal');
+  }
+}
 
-  window.editSong = (index) => {
-    const song = songs[index];
-    form.title.value = song.title;
-    form.artist.value = song.artist;
-    form.note.value = song.note;
-    form.spotify.value = song.spotify;
-    modal.style.display = 'block';
-    form.onsubmit = (e) => {
-      e.preventDefault();
-      song.title = form.title.value;
-      song.artist = form.artist.value;
-      song.note = form.note.value;
-      song.spotify = form.spotify.value;
-      const file = form.image.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          song.image = reader.result;
-          localStorage.setItem('songs', JSON.stringify(songs));
-          renderCards();
-          modal.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-      } else {
-        localStorage.setItem('songs', JSON.stringify(songs));
-        renderCards();
-        modal.style.display = 'none';
+function deleteSong(index) {
+  songs.splice(index, 1);
+  localStorage.setItem('songs', JSON.stringify(songs));
+  renderSongs();
+}
+
+function editSong(index) {
+  const song = songs[index];
+  document.getElementById('song-title').value = song.title;
+  document.getElementById('song-artist').value = song.artist;
+  document.getElementById('song-note').value = song.note;
+  document.getElementById('song-url').value = song.url;
+  openModal('song-modal');
+  deleteSong(index);
+}
+
+function handleCSV() {
+  const file = document.getElementById('csv-file').files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.split('\n');
+    const headers = lines[0].split(',');
+    const songIndex = headers.indexOf('Song');
+    const artistIndex = headers.indexOf('Artist');
+    const idIndex = headers.indexOf('Spotify Track Id');
+    for (let i = 1; i < lines.length; i++) {
+      const row = lines[i].split(',');
+      if (row.length > Math.max(songIndex, artistIndex, idIndex)) {
+        const title = row[songIndex].replace(/^"|"$/g, '');
+        const artist = row[artistIndex].replace(/^"|"$/g, '');
+        const id = row[idIndex].replace(/^"|"$/g, '');
+        const url = 'https://open.spotify.com/track/' + id;
+        songs.push({ title, artist, note: '', url, image: '' });
       }
-    };
-  };
-
-  addBtn.onclick = () => {
-    form.reset();
-    modal.style.display = 'block';
-    form.onsubmit = (e) => {
-      e.preventDefault();
-      const newSong = {
-        title: form.title.value,
-        artist: form.artist.value,
-        note: form.note.value,
-        spotify: form.spotify.value,
-        image: null
-      };
-      const file = form.image.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          newSong.image = reader.result;
-          songs.push(newSong);
-          localStorage.setItem('songs', JSON.stringify(songs));
-          renderCards();
-          modal.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-      } else {
-        songs.push(newSong);
-        localStorage.setItem('songs', JSON.stringify(songs));
-        renderCards();
-        modal.style.display = 'none';
-      }
-    };
-  };
-
-  bulkBtn.onclick = () => bulkInput.click();
-  bulkInput.onchange = () => {
-    const file = bulkInput.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const lines = reader.result.split('\n');
-        const headers = lines[0].split(',');
-        const songIndex = headers.indexOf('song');
-        const artistIndex = headers.indexOf('artist');
-        for (let i = 1; i < lines.length; i++) {
-          const cols = lines[i].split(',');
-          if (cols.length >= 2) {
-            songs.push({
-              title: cols[songIndex],
-              artist: cols[artistIndex],
-              note: '',
-              spotify: '',
-              image: null
-            });
-          }
-        }
-        localStorage.setItem('songs', JSON.stringify(songs));
-        renderCards();
-      };
-      reader.readAsText(file);
     }
+    localStorage.setItem('songs', JSON.stringify(songs));
+    renderSongs();
+    closeModal('bulk-modal');
   };
+  reader.readAsText(file);
+}
 
-  closeBtn.onclick = () => modal.style.display = 'none';
-  renderCards();
-});
+if (songs.length === 0) {
+  songs = [
+    { title: 'Vienna', artist: 'Billy Joel', note: 'Reminds me to slow down.', url: 'https://open.spotify.com/track/3FCto7hnn1shUyZL42YgfO', image: '' },
+    { title: 'Holocene', artist: 'Bon Iver', note: 'A moment of clarity.', url: 'https://open.spotify.com/track/0U0ldCRmgCqhVvD6ksG63j', image: '' },
+    { title: 'Motion Sickness', artist: 'Phoebe Bridgers', note: 'Bittersweet and raw.', url: 'https://open.spotify.com/track/3ZOEytgrvLwQaqXreDs2Jx', image: '' },
+    { title: 'Nights', artist: 'Frank Ocean', note: 'Two moods in one song.', url: 'https://open.spotify.com/track/3xKsf9qdS1CyvXSMEid6g8', image: '' }
+  ];
+  localStorage.setItem('songs', JSON.stringify(songs));
+}
+
+renderSongs();

@@ -2,35 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>what you sound like to me</title>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>what you sound like to me</h1>
-  <p class="subtitle">This is a collection of songs that mean something to me.</p>
-  <a href="#" class="playlist-link">Spotify Playlist</a>
+  <div class="header">
+    <h1>what you sound like to me</h1>
+    <p class="subtitle">A collection of songs and what they mean to me</p>
+    <a href="#" class="playlist-link">View the full playlist</a>
+  </div>
 
-  <div class="card-container" id="cardContainer"></div>
+  <div id="card-container" class="card-container"></div>
 
-  <button id="addSongBtn" class="add-button">+</button>
-  <button id="bulkAddBtn" class="bulk-button">Bulk Add</button>
-  <input type="file" id="bulkFileInput" accept=".csv" style="display:none;" />
-
-  <div id="modal" class="modal">
+  <!-- Add Song Modal -->
+  <div id="song-modal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
+      <span class="close" onclick="closeModal('song-modal')">&times;</span>
       <h2>Add a New Song</h2>
-      <form id="songForm">
-        <label>Song Title:</label><input type="text" name="title" required />
-        <label>Artist:</label><input type="text" name="artist" required />
-        <label>Image:</label><input type="file" name="image" accept="image/*" />
-        <label>Note:</label><textarea name="note"></textarea>
-        <label>Spotify URL:</label><input type="url" name="spotify" />
-        <button type="submit">Add Song</button>
-      </form>
+      <label>Title: <input type="text" id="song-title" /></label>
+      <label>Artist: <input type="text" id="song-artist" /></label>
+      <label>Image: <input type="file" id="song-image" accept="image/*" /></label>
+      <label>Note: <textarea id="song-note"></textarea></label>
+      <label>Spotify URL: <input type="text" id="song-url" /></label>
+      <button onclick="addSong()">Add Song</button>
     </div>
+  </div>
+
+  <!-- Bulk Add Modal -->
+  <div id="bulk-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('bulk-modal')">&times;</span>
+      <h2>Bulk Add Songs</h2>
+      <p>To bulk add songs, export your Spotify playlist to CSV using <a href="https://exportify.net/" target="_blank">Exportify</a>.</p>
+      <p>The CSV must include columns: <strong>Song</strong>, <strong>Artist</strong>, and <strong>Spotify Track Id</strong>.</p>
+      <input type="file" id="csv-file" accept=".csv" />
+      <button onclick="handleCSV()">Upload</button>
+    </div>
+  </div>
+
+  <!-- Sticky Buttons -->
+  <div class="sticky-buttons">
+    <button onclick="openModal('song-modal')">＋</button>
+    <button onclick="openModal('bulk-modal')">⇪</button>
   </div>
 
   <script src="script.js"></script>
