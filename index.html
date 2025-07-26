@@ -35,7 +35,7 @@
       <span class="close" onclick="closeModal('bulk-modal')">&times;</span>
       <h2>Bulk Add Songs</h2>
       <p>To bulk add songs, export your Spotify playlist to CSV using <a href="https://exportify.net/" target="_blank">Exportify</a>.</p>
-      <p>The CSV must include columns: <strong>Song</strong>, <strong>Artist</strong>, and <strong>Spotify Track Id</strong>.</p>
+      <p>The CSV must include these columns: <strong>Song</strong>, <strong>Artist</strong>, and <strong>Spotify Track Id</strong>.</p>
       <input type="file" id="csv-file" accept=".csv" />
       <button onclick="handleCSV()">Upload</button>
     </div>
@@ -43,8 +43,8 @@
 
   <!-- Sticky Buttons -->
   <div class="sticky-buttons">
-    <button onclick="openModal('song-modal')">＋</button>
-    <button onclick="openModal('bulk-modal')">⇪</button>
+    <button onclick="openModal('song-modal')">Add song ＋</button>
+    <button onclick="openModal('bulk-modal')">Bulk add songs ⇪</button>
   </div>
 
   <script src="script.js"></script>
