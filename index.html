@@ -19,7 +19,7 @@
   <div id="song-modal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal('song-modal')">&times;</span>
-      <h2>Add a New Song</h2>
+      <h2>Add or edit a song</h2>
       <label>Title: <input type="text" id="song-title" /></label>
       <label>Artist: <input type="text" id="song-artist" /></label>
       <label>Image: <input type="file" id="song-image" accept="image/*" /></label>
@@ -33,7 +33,7 @@
   <div id="bulk-modal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal('bulk-modal')">&times;</span>
-      <h2>Bulk Add Songs</h2>
+      <h2>Bulk add songs</h2>
       <p>To bulk add songs, export your Spotify playlist to CSV using <a href="https://exportify.net/" target="_blank">Exportify</a>.</p>
       <p>The CSV must include these columns: <strong>Song</strong>, <strong>Artist</strong>, and <strong>Spotify Track Id</strong>.</p>
       <input type="file" id="csv-file" accept=".csv" />
