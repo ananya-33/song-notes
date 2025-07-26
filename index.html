@@ -8,27 +8,28 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <canvas id="trail-canvas"></canvas>
   <div class="container">
     <h1>what you sound like to me</h1>
-    <p class="subtitle">This is a collection of songs that mean something to me. Each one tells a story.</p>
-    <a href="#" class="placeholder-link">Visit my Spotify playlist</a>
-
-    <div id="songCards" class="card-container"></div>
+    <p class="subtitle">a collection of songs and what they mean to me</p>
+    <a href="#" class="playlist-link">Spotify Playlist</a>
+    <div id="cards-container"></div>
+    <button id="add-button">+</button>
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Add a New Song</h2>
+        <form id="song-form">
+          <input type="text" id="title" placeholder="Song Title" required />
+          <input type="text" id="artist" placeholder="Artist" required />
+          <input type="file" id="image" accept="image/*" required />
+          <textarea id="note" placeholder="Why this song is meaningful..." required></textarea>
+          <input type="url" id="spotify" placeholder="Spotify URL" required />
+          <button type="submit">Add Song</button>
+        </form>
+      </div>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>
 </html>
-
-    <div class="form-container">
-      <h2>Add a New Song</h2>
-      <form id="songForm">
-        <input type="text" id="title" placeholder="Song Title" required />
-        <input type="text" id="artist" placeholder="Artist" required />
-        <input type="text" id="image" placeholder="Image URL" required />
-        <textarea id="note" placeholder="Why this song is meaningful" required></textarea>
-        <input type="url" id="spotify" placeholder="Spotify URL" required />
-        <button type="submit">Add Song</button>
-      </form>
-    </div>
-
-    
